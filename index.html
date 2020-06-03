@@ -1,0 +1,54 @@
+<!DOCTYPE >
+<html>
+  <head>
+    <title>Custom Elements Demo</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="stylesheet" href="index.css" />
+    <script>
+      class StarRating extends HTMLElement {
+        render() {
+          let rateCount = this.getAttribute("rate") || undefined;
+          let totalCount = this.getAttribute("total") || undefined;
+          this.innerHTML = "";
+          if (rateCount) {
+            for (let i = 0; i < parseInt(totalCount); i++) {
+              let newStar = document.createElement("span");
+              newStar.className = "fa";
+              newStar.classList.add("fa-star");
+              if (i < parseInt(rateCount)) {
+                newStar.classList.add("checked");
+              }
+              this.appendChild(newStar);
+            }
+          }
+        }
+
+        //Called after inserting to dom.
+        connectedCallback() {
+          if (!this.rendered) {
+            this.render();
+            this.rendered = true;
+          }
+        }
+
+        static get observedAttributes() {
+          // (3)
+          return ["rate", "total"];
+        }
+
+        attributeChangedCallback(rate, total) {
+          this.render();
+        }
+      }
+
+      customElements.define("star-rating", StarRating);
+    </script>
+  </head>
+  <body>
+    <h1>Custom Elements</h1>
+    <star-rating rate="3" total="5"></star-rating>
+  </body>
+</html>
